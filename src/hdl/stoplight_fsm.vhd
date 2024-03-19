@@ -80,13 +80,13 @@ begin
 	-- Next state logic
 	
 	f_Q_next(0) <= (not f_Q(1)) and i_C;
-	f_Q_next(1) <= (not f_Q(1)) and f_Q(0) and i_C;
+	f_Q_next(1) <= (not f_Q(1)) and f_Q(0) and (not (i_C));
 	
 	-- Output logic
 	
 	o_G <= (not f_Q(1)) and f_Q(0);
 	o_Y <= f_Q(1) and (not f_Q(0));
-	o_R <= ((not f_Q(1)) and (not f_Q(0))) or (f_Q(0) and f_Q(0));
+	o_R <= ((not f_Q(1)) and (not f_Q(0))) or (f_Q(1) and f_Q(0));
 	
 	-------------------------------------------------------	
 	
@@ -94,11 +94,10 @@ begin
 	-- state memory w/ asynchronous reset ---------------
 	register_proc : process (i_clk, i_reset)
 	begin
-			--Reset state is yellow
         if i_reset = '1' then
-            f_Q <= "10";
+            f_Q <= "10";    --Reset state is yellow
         elsif (rising_edge(i_clk)) then
-            f_Q <= f_Q_next;
+            f_Q <= f_Q_next;    --next state becomes current state
         end if;
 
 	end process register_proc;
